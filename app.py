@@ -35,7 +35,6 @@ def get_doc(doc_link):
 
     resp = Response(page.content)
     resp.headers["Content-Type"] = "application/pdf"
-
     return resp
 
 @app.route("/")
