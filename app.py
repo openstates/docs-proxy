@@ -12,10 +12,9 @@ def get_doc(doc_link):
         #/hb1001.02.comh?format=pdf
 
     #the url here will be:
-    #http://localhost:5000/todo/api/v1/doc/2015/bills
-        #/hb1001/versions/hb1001.02.comh
+    # /todo/api/v1/doc/2015/bills/hb1001/versions/hb1001.02.comh
 
-    #also note that as of right now, their site fails http
+    #also note that as of right now, their site fails https verification
 
     headers = {}
     headers['Authorization'] = os.environ['INDIANA_API_KEY']
@@ -26,6 +25,17 @@ def get_doc(doc_link):
     resp.headers["Content-Type"] = "application/pdf"
 
     return resp
+
+@app.route("/")
+def index():
+    description = """Accessing Indiana's legislative documents \
+                    without an API key is hard to do in a consistent \
+                    way. This service requests the desired document \
+                    using Open States' API key and make them searchable \
+                    in the Open States interface."""
+
+    return(description)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
