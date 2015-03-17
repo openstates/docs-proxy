@@ -4,7 +4,7 @@ import requests
 
 app = Flask(__name__)
 
-@app.route('/todo/api/v1/doc/<path:doc_link>',methods=['GET'])
+@app.route("/<path:doc_link>",methods=["GET"])
 def get_doc(doc_link):
     #the doc_link is the unique part of the pdf's url.
     #so for example, for the document at:
@@ -12,7 +12,7 @@ def get_doc(doc_link):
         #/hb1001.02.comh?format=pdf
 
     #the url here will be:
-    # /todo/api/v1/doc/2015/bills/hb1001/versions/hb1001.02.comh
+    # in.proxy.openstates.org/2015/bills/hb1001/versions/hb1001.02.comh
 
     #also note that as of right now, their site fails https verification
 
