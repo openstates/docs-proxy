@@ -1,11 +1,11 @@
 {
   "name": "Indiana Document Proxy",
-  "description": "Accessing Indiana's legislative documents without an API key is hard to do in a consistent way. This service requests the desired document using Open States' API key and make them searchable in the Open States interface.",
+  "description": "Accessing Indiana's legislative documents without an API key",
   "repository": "https://github.com/sunlightlabs/indiana-docs",
   "logo": "http://static.openstates.org/assets/permanent/open-states_logo.png",
   "env": {
     "INDIANA_API_KEY": {
-        "description": "An API key acquired from the state's legislative website. Note that this key should start with the word 'Token' and you'll need to include it. For more information: http://docs.api.iga.in.gov/api.html",
+        "description": "An API key acquired from the state's legislative website. For more information: http://docs.api.iga.in.gov/api.html",
         "required": true
 
     }
