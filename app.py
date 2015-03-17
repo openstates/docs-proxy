@@ -21,6 +21,18 @@ def get_doc(doc_link):
     headers['Content-Type'] = "application/pdf"
     full_link = "https://api.iga.in.gov/" + doc_link + "?format=pdf"
     page = requests.get(full_link,headers=headers,verify=False)
+    
+    if page.status_code == 429:
+        resp = Response()
+        resp.status_code = 429
+        resp.headers = page.headers
+        return resp
+
+    if page.status_code != 200:
+        resp = Response()
+        resp.status_code = 500
+        return resp
+
     resp = Response(page.content)
     resp.headers["Content-Type"] = "application/pdf"
 
