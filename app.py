@@ -1,3 +1,4 @@
+import os
 from flask import Flask, Response
 import requests
 
@@ -17,7 +18,7 @@ def get_doc(doc_link):
     #also note that as of right now, their site fails http
 
     headers = {}
-    headers['Authorization'] = in_api_key
+    headers['Authorization'] = os.environ['INDIANA_API_KEY']
     headers['Content-Type'] = "application/pdf"
     full_link = "https://api.iga.in.gov/" + doc_link + "?format=pdf"
     page = requests.get(full_link,headers=headers,verify=False)
