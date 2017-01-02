@@ -35,6 +35,7 @@ def get_doc(doc_link):
 
     resp = Response(page.content)
     resp.headers["Content-Type"] = "application/pdf"
+    resp.headers["X-Robots-Tag"] = "noindex"
     return resp
 
 @app.route("/")
@@ -46,6 +47,12 @@ def index():
                     in the Open States interface."""
 
     return(description)
+
+@app.route("/robots.txt")
+def robots.txt():
+    return """User-agent: *
+Disallow: /"""
+
 
 
 if __name__ == "__main__":
