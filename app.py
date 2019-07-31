@@ -19,7 +19,7 @@ def get_doc(doc_link):
     headers = {}
     headers['Authorization'] = os.environ['INDIANA_API_KEY']
     headers['Content-Type'] = "application/pdf"
-    headers['User-Agent'] = 'openstates-in-proxy'
+    headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'
     full_link = "https://api.iga.in.gov/" + doc_link + "?format=pdf"
     page = requests.get(full_link,headers=headers,verify=False)
 
