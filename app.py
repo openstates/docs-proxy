@@ -18,26 +18,19 @@ def get_doc(doc_link):
     headers = {}
     headers['Authorization'] = os.environ['INDIANA_API_KEY']
     headers['Content-Type'] = "application/pdf"
-    headers['User-Agent'] = 'openstates-proxy-2'
+    headers['User-Agent'] = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0'
     full_link = "https://api.iga.in.gov/" + doc_link + "?format=pdf"
-    page = requests.get(full_link,headers=headers,verify=False)
-
-    print(full_link, page)
-
-    if page.status_code == 429:
-        resp = Response()
-        resp.status_code = 429
-        resp.headers = page.headers
-        return resp
-
-    if page.status_code != 200:
-        resp = Response()
-        resp.status_code = 500
-        return resp
+    page = requests.get(full_link,headers=headers,verify=True)
+    print(full_link)
 
     resp = Response(page.content)
-    resp.headers["Content-Type"] = "application/pdf"
-    resp.headers["X-Robots-Tag"] = "noindex"
+    resp.status_code = page.status_code
+
+    if page.status_code != 200:
+        pass
+    else:
+        resp.headers["Content-Type"] = "application/pdf"
+        resp.headers["X-Robots-Tag"] = "noindex"
     return resp
 
 @app.route("/")
