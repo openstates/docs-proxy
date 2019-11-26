@@ -8,8 +8,7 @@ app = Flask(__name__)
 def get_doc(doc_link):
     #the doc_link is the unique part of the pdf's url.
     #so for example, for the document at:
-    #https://api.iga.in.gov/2015/bills/hb1001/versions
-        #/hb1001.02.comh?format=pdf
+    #https://api.iga.in.gov/2015/bills/hb1001/versions/hb1001.02.comh?format=pdf
 
     #the url here will be:
     # in.proxy.openstates.org/2015/bills/hb1001/versions/hb1001.02.comh
@@ -19,7 +18,7 @@ def get_doc(doc_link):
     headers = {}
     headers['Authorization'] = os.environ['INDIANA_API_KEY']
     headers['Content-Type'] = "application/pdf"
-    headers['User-Agent'] = 'openstates-in-proxy'
+    headers['User-Agent'] = 'openstates-proxy-2'
     full_link = "https://api.iga.in.gov/" + doc_link + "?format=pdf"
     page = requests.get(full_link,headers=headers,verify=False)
 
