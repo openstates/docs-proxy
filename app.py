@@ -22,6 +22,8 @@ def get_doc(doc_link):
     full_link = "https://api.iga.in.gov/" + doc_link + "?format=pdf"
     page = requests.get(full_link,headers=headers,verify=False)
 
+    print(full_link, page)
+
     if page.status_code == 429:
         resp = Response()
         resp.status_code = 429
