@@ -11,6 +11,8 @@ app = Flask(__name__)
 
 @app.route("/iga/<path:iga_path>", methods=["GET"])
 def get_iga_page(iga_path):
+    # need to drop down to this level to avoid adding Keep-Alive header which
+    # seems to trigger cloudflare for some reason
     headers = {"User-Agent": USER_AGENT, "Accept": "*/*"}
     pm = urllib3.PoolManager(maxsize=10)
     full_link = "http://iga.in.gov/" + iga_path
