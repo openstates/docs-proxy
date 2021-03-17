@@ -1,8 +1,24 @@
 import os
 from flask import Flask, Response
+import urllib3
 import requests
 
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0"
+)
 app = Flask(__name__)
+
+
+@app.route("/iga/<path:iga_path>", methods=["GET"])
+def get_iga_page(iga_path):
+    headers = {"User-Agent": USER_AGENT, "Accept": "*/*"}
+    pm = urllib3.PoolManager(maxsize=10)
+    full_link = "http://iga.in.gov/" + iga_path
+    raw = pm.urlopen("GET", full_link, headers=headers)
+
+    resp = Response(raw.data)
+    resp.status_code = raw.status
+    return resp
 
 
 @app.route("/<path:doc_link>", methods=["GET"])
@@ -19,9 +35,7 @@ def get_doc(doc_link):
     headers = {}
     headers["Authorization"] = os.environ["INDIANA_API_KEY"]
     headers["Content-Type"] = "application/pdf"
-    headers[
-        "User-Agent"
-    ] = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0"
+    headers["User-Agent"] = USER_AGENT
     full_link = "https://api.iga.in.gov/" + doc_link + "?format=pdf"
     page = requests.get(full_link, headers=headers, verify=True)
 
