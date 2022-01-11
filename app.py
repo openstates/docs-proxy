@@ -66,13 +66,7 @@ def get_indiana_doc(doc_link):
 
 @app.route("/")
 def index():
-    description = """Accessing Indiana's legislative documents \
-                    without an API key is hard to do in a consistent \
-                    way. This service requests the desired document \
-                    using Open States' API key and make them searchable \
-                    in the Open States interface."""
-
-    return description
+    return "This is a service used by Open States to access IN & CA documents in the browser.  Please use gently."
 
 
 @app.route("/robots.txt")

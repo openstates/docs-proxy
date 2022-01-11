@@ -1,7 +1,7 @@
 {
-  "name": "Indiana Document Proxy",
-  "description": "Accessing Indiana's legislative documents without an API key",
-  "repository": "https://github.com/openstates/indiana-docs",
+  "name": "Open States Document Proxy",
+  "description": "Accessing California/Indiana legislative documents without an API key",
+  "repository": "https://github.com/openstates/docs-proxy",
   "logo": "https://s.openstates.org/assets/permanent/open-states_logo.png",
   "env": {
     "INDIANA_API_KEY": {
