@@ -1,6 +1,6 @@
 import os
-from flask import Flask, Response
-import urllib3
+from flask import Flask, Response, request
+import lxml.html
 import requests
 
 USER_AGENT = (
@@ -9,22 +9,43 @@ USER_AGENT = (
 app = Flask(__name__)
 
 
-@app.route("/iga/<path:iga_path>", methods=["GET"])
-def get_iga_page(iga_path):
-    # need to drop down to this level to avoid adding Keep-Alive header which
-    # seems to trigger cloudflare for some reason
-    headers = {"User-Agent": USER_AGENT, "Accept": "*/*"}
-    pm = urllib3.PoolManager(maxsize=10)
-    full_link = "http://iga.in.gov/" + iga_path
-    raw = pm.urlopen("GET", full_link, headers=headers)
+def _upstream_to_resp(upstream_resp):
+    resp = Response(upstream_resp.content)
+    resp.status_code = upstream_resp.status_code
 
-    resp = Response(raw.data)
-    resp.status_code = raw.status
+    if upstream_resp.status_code != 200:
+        pass
+    else:
+        resp.headers["Content-Type"] = "application/pdf"
+        resp.headers["X-Robots-Tag"] = "noindex"
     return resp
 
 
+@app.route("/ca", methods=["GET"])
+def get_california_doc():
+    BASE_URL = "https://leginfo.legislature.ca.gov/faces/billPdf.xhtml"
+    bill_id = request.args.get("bill_id")
+    version = request.args.get("version")
+
+    # use one session to make the GET and then POST with view_state and cookie
+    session = requests.Session()
+    get_resp = session.get(BASE_URL + f"?bill_id={bill_id}&version={version}")
+    doc = lxml.html.fromstring(get_resp.content)
+    view_state = doc.xpath("//input[@name='javax.faces.ViewState']/@value")[0]
+
+    form = {
+        "downloadForm": "downloadForm",
+        "javax.faces.ViewState": view_state,
+        "pdf_link2": "pdf_link2",
+        "bill_id": bill_id,
+        "version": version,
+    }
+    resp = session.post(BASE_URL, data=form)
+    return _upstream_to_resp(resp)
+
+
 @app.route("/<path:doc_link>", methods=["GET"])
-def get_doc(doc_link):
+def get_indiana_doc(doc_link):
     # the doc_link is the unique part of the pdf's url.
     # so for example, for the document at:
     # https://api.iga.in.gov/2015/bills/hb1001/versions/hb1001.02.comh?format=pdf
@@ -40,16 +61,7 @@ def get_doc(doc_link):
     headers["User-Agent"] = USER_AGENT
     full_link = "https://api.iga.in.gov/" + doc_link + "?format=pdf"
     page = requests.get(full_link, headers=headers, verify=True)
-
-    resp = Response(page.content)
-    resp.status_code = page.status_code
-
-    if page.status_code != 200:
-        pass
-    else:
-        resp.headers["Content-Type"] = "application/pdf"
-        resp.headers["X-Robots-Tag"] = "noindex"
-    return resp
+    return _upstream_to_resp(page)
 
 
 @app.route("/")
