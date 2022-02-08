@@ -2,7 +2,7 @@
 name = "indiana-docs"
 version = "1.2.0"
 description = ""
-authors = ["James Turk <james@openstates.org>"]
+authors = ["James Turk <dev@jamesturk.net>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
