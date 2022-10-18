@@ -1,4 +1,4 @@
-FROM python-3.7:slim
+FROM python:3.7-slim
 
 WORKDIR /app
 
@@ -7,8 +7,9 @@ COPY poetry.lock .
 COPY app.py .
 
 RUN pip3 install --no-cache-dir --disable-pip-version-check wheel \
-    && pip3 install --no-cache-dir --disable-pip-version-check poetry crcmod \
-    && poetry install --only=main \
+    && pip3 install --no-cache-dir --disable-pip-version-check poetry crcmod
+# separate poetry install from deps install
+RUN poetry install --only=main \
     && rm -rf /root/.cache/pypoetry/cache /root/.cache/pypoetry/artifacts/
 
 ENV PORT 8080

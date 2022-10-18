@@ -31,6 +31,14 @@ req_errors = Counter(
 req_time = Summary("requests_time_seconds", "Time each request takes", ["endpoint"])
 
 
+@req_time.labels(endpoint="/healthz").time()
+@req_errors.labels(endpoint="/healthz").count_exceptions()
+@app.route("/healthz", methods=["GET"])
+def health():
+    req_count.labels(endpoint="/healthz").inc()
+    return "OK"
+
+
 @req_time.labels(endpoint="/metrics").time()
 @req_errors.labels(endpoint="/metrics").count_exceptions()
 @app.route("/metrics", methods=["GET"])
