@@ -10,6 +10,10 @@ app = Flask(__name__)
 
 
 def _upstream_to_resp(upstream_resp):
+    """
+    Add missing headers to the response so the actual
+    consuming application can handle things properly
+    """
     resp = Response(upstream_resp.content)
     resp.status_code = upstream_resp.status_code
 
@@ -40,27 +44,32 @@ def get_california_doc():
         "bill_id": bill_id,
         "version": version,
     }
-    resp = session.post(BASE_URL, data=form)
+    resp = session.post(BASE_URL, data=form, verify=False)
     return _upstream_to_resp(resp)
 
 
+@app.route("/in/<path:doc_link>", methods=["GET"])
 @app.route("/<path:doc_link>", methods=["GET"])
 def get_indiana_doc(doc_link):
-    # the doc_link is the unique part of the pdf's url.
-    # so for example, for the document at:
-    # https://api.iga.in.gov/2015/bills/hb1001/versions/hb1001.02.comh?format=pdf
+    """
+    two routes here (For now), both /in/<path> and /<path>. This should let us
+    migrate to /in/ in the future, making this package more flexible for more
+    endpoints
 
-    # the url here will be:
-    # in.proxy.openstates.org/2015/bills/hb1001/versions/hb1001.02.comh
+    the doc_link is the unique part of the pdf's url.
+    so for example, for the document at:
+    https://api.iga.in.gov/2015/bills/hb1001/versions/hb1001.02.comh?format=pdf
 
-    # also note that as of right now, their site fails https verification
-
-    headers = {}
-    headers["Authorization"] = os.environ["INDIANA_API_KEY"]
-    headers["Content-Type"] = "application/pdf"
-    headers["User-Agent"] = USER_AGENT
-    full_link = "https://api.iga.in.gov/" + doc_link + "?format=pdf"
-    page = requests.get(full_link, headers=headers, verify=True)
+    the url here will be:
+    in-proxy.openstates.org/2015/bills/hb1001/versions/hb1001.02.comh
+    """
+    headers = {
+        "Authorization": os.environ["INDIANA_API_KEY"],
+        "Content-Type": "application/pdf",
+        "User-Agent": USER_AGENT,
+    }
+    full_link = f"https://api.iga.in.gov/{doc_link}?format=pdf"
+    page = requests.get(full_link, headers=headers, verify=False)
     return _upstream_to_resp(page)
 
 
@@ -76,4 +85,4 @@ Disallow: /"""
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run("0.0.0.0", debug=False)
