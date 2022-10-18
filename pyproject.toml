@@ -2,7 +2,10 @@
 name = "docs-proxy"
 version = "1.2.0"
 description = ""
-authors = ["James Turk <dev@jamesturk.net>"]
+authors = [
+  "James Turk <dev@jamesturk.net>",
+  "John Seekins <john@civiceagle.com>"
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
