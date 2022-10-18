@@ -17,11 +17,11 @@ jobs:
     # Python & dependency installation
     - uses: actions/checkout@v3
     - name: setup Python 3.10
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
-        python-version: 3.10
+        python-version: "3.10"
     - name: install Poetry
-      uses: snok/install-poetry@v1.1.1
+      uses: snok/install-poetry@v1.3.3
     - name: install dependencies
       run: poetry install
     - name: lint with flake8
