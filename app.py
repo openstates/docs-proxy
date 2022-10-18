@@ -74,7 +74,7 @@ def get_california_doc():
 
     # use one session to make the GET and then POST with view_state and cookie
     session = requests.Session()
-    get_resp = session.get(BASE_URL + f"?bill_id={bill_id}&version={version}")
+    get_resp = session.get(f"{BASE_URL}?bill_id={bill_id}&version={version}")
     doc = lxml.html.fromstring(get_resp.content)
     view_state = doc.xpath("//input[@name='javax.faces.ViewState']/@value")[0]
 
