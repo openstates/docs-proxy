@@ -75,7 +75,7 @@ def get_indiana_doc(doc_link):
 
 @app.route("/")
 def index():
-    return "This is a service used by Open States to access IN & CA documents in the browser.  Please use gently."
+    return "This is a service used by Open States to access sites with strange requirements (e.g. CA requires POST requests, IN auth proxy) in the browser.  Please use gently."
 
 
 @app.route("/robots.txt")
