@@ -12,5 +12,8 @@ RUN pip3 install --no-cache-dir --disable-pip-version-check wheel \
 RUN poetry install --only=main \
     && rm -rf /root/.cache/pypoetry/cache /root/.cache/pypoetry/artifacts/
 
+ENV PORT 8080
+
 # avoid multiprocessing (workers > 1) for now to make instrumentation simpler
-ENTRYPOINT ["poetry", "run", "gunicorn", "--bind", ":8080", "--workers", "1", "--threads", "8", "app:app"]
+# use the 'shell' form of entrypoint so variables get evaluated
+ENTRYPOINT poetry run gunicorn --bind :${PORT} --workers 1 --threads 8 app:app
