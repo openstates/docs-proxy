@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -6,11 +6,15 @@ COPY pyproject.toml .
 COPY poetry.lock .
 COPY app.py .
 
-RUN pip3 install --no-cache-dir --disable-pip-version-check wheel \
+RUN apt-get update -qq && \
+    DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y -qq build-essential \
+    && pip3 install --no-cache-dir --disable-pip-version-check wheel \
     && pip3 install --no-cache-dir --disable-pip-version-check poetry crcmod
 # separate poetry install from deps install
 RUN poetry install --only=main \
-    && rm -rf /root/.cache/pypoetry/cache /root/.cache/pypoetry/artifacts/
+    && rm -rf /root/.cache/pypoetry/cache /root/.cache/pypoetry/artifacts/ \
+    && apt-get remove -y -qq build-essential \
+    && apt-get autoremove -y -qq
 
 ENV PORT 8080
 
