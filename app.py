@@ -5,7 +5,10 @@ import logging
 import lxml.html
 from prometheus_client import Counter, generate_latest, REGISTRY, Summary
 import requests
+from urllib3.exceptions import InsecureRequestWarning
+from urllib3 import disable_warnings
 
+disable_warnings(InsecureRequestWarning)
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0"
 )
